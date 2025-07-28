@@ -12,10 +12,16 @@ class ResultCalculeUsecaseImpl extends ResultCalculeUsecase {
   Future<Either<Exception, double>> call(ResultCalcule resultCalcule) {
     try {
       final distance = resultCalcule.endKm - resultCalcule.initialKm;
-      final cost = (resultCalcule.priceFuel * resultCalcule.totalFuel) / distance;
+      if (distance == 0) {
+        throw Exception('Distância não pode ser zero');
+      }
+      final autonomy = distance / (resultCalcule.totalFuel / resultCalcule.priceFuel);
+      final cost = autonomy * resultCalcule.priceFuel;
       return Future.value(Right(cost));
     } catch (e) {
       return Future.value(Left(Exception('Erro no cálculo')));
     }
   }
 }
+
+// distancia / (precoL * valor abastecido)
